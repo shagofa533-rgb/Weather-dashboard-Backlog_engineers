@@ -1,0 +1,34 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --mo-navy: #003a70;
+  --mo-blue: #0065bd;
+  --mo-teal: #00a4a7;
+  --mo-green: #00843d;
+  --mo-light-blue: #e8f4fd;
+  --mo-grey: #f5f5f5;
+  --mo-mid-grey: #dcdcdc;
+  --mo-dark-grey: #4a4a4a;
+  --mo-white: #ffffff;
+  --mo-text: #1a1a1a;
+
+  --font-display: 'Source Serif 4', 'Georgia', serif;
+  --font-body: 'Source Sans 3', 'Helvetica Neue', sans-serif;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  height: 100%;
+  color: var(--mo-text);
+  background: var(--mo-white);
+}
+
+#root {
+  min-height: 100vh;
+}
