@@ -756,6 +756,8 @@ function App() {
   const [page,      setPage]      = useState("home");
   const [geoLoading,setGeoLoading]= useState(false);
   const [geoError,  setGeoError]  = useState(null);
+  const [history,   setHistory]   = useState(getHistory);
+  const refreshHistory = () => setHistory(getHistory());
 
   useEffect(() => {
     const saved = localStorage.getItem("wo_last_city");
