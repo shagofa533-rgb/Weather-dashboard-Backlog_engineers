@@ -79,7 +79,7 @@ function SkyScene({ condition, isNight, windSpeed = 0 }) {
 
   let children = null;
 
-  /* ── CLEAR NIGHT ── */
+  /* CLEAR NIGHT */
   if (c === "clear" && isNight) {
     children = (
       <>
@@ -89,7 +89,7 @@ function SkyScene({ condition, isNight, windSpeed = 0 }) {
     );
   }
 
-  /* ── CLEAR DAY ── */
+  /* CLEAR DAY */
   else if (c === "clear" && !isNight) {
     const clouds = [
       { w:180, h:48, top:"18%", left:"-5%",  dur:"55s", delay:"0s",   op:0.75 },
