@@ -54,7 +54,7 @@ function saveFavourites(list) {
 /* ── SEARCH HISTORY helpers ── */
 const HISTORY_KEY = "wo_search_history";
 const HISTORY_MAX = 10;
-
+//asdfa
 function getHistory() {
   try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }
   catch { return []; }
