@@ -231,7 +231,7 @@ function SkyScene({ condition, isNight, windSpeed = 0 }) {
 }
 
 /* ── HOME PAGE ── */
-function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoading, geoError }) {
+function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoading, geoError, history = [], onRemoveHistory, onClearHistory }) {
   const exploreRef = useRef(null);
   const quickLinks = [
     { icon:"🌡️", title:"Temperature Maps", desc:"High-resolution global temperature charts",  key:"tempmap",  live:true },
@@ -337,6 +337,46 @@ function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoadin
             </div>
           )}
 
+          {history.length > 0 && (
+  <div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(0,164,167,0.15)",borderRadius:16,padding:"28px 32px",marginBottom:28}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18,flexWrap:"wrap",gap:10}}>
+      <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <span style={{fontSize:20}}>🕐</span>
+        <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:"white",margin:0}}>Recent Searches</h3>
+        <span style={{fontSize:12,background:"rgba(0,164,167,0.15)",color:"#00d4d8",borderRadius:50,padding:"2px 10px",fontWeight:600}}>{history.length}</span>
+      </div>
+      <button
+        onClick={onClearHistory}
+        style={{background:"transparent",border:"1px solid rgba(255,255,255,0.12)",color:"rgba(255,255,255,0.4)",borderRadius:50,padding:"6px 16px",fontSize:12,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}
+        onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(255,80,80,0.4)";e.currentTarget.style.color="rgba(255,100,100,0.8)";}}
+        onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.12)";e.currentTarget.style.color="rgba(255,255,255,0.4)";}}
+      >🗑 Clear all</button>
+    </div>
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      {history.map((h, i) => (
+        <div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 16px",transition:"all 0.2s",gap:12}}
+          onMouseEnter={e=>e.currentTarget.style.background="rgba(0,164,167,0.08)"}
+          onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.04)"}
+        >
+          <button onClick={() => onSearch(h.name)} style={{flex:1,background:"none",border:"none",color:"white",cursor:"pointer",textAlign:"left",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,padding:0}}>
+            <span style={{fontSize:16}}>🔍</span>
+            <div>
+              <span style={{fontSize:15,fontWeight:600,color:"white"}}>{h.name}</span>
+              {h.country && <span style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginLeft:8}}>{h.country}</span>}
+            </div>
+            <span style={{fontSize:12,color:"rgba(255,255,255,0.3)",marginLeft:"auto",paddingRight:12}}>{fmtHistoryTime(h.time)}</span>
+          </button>
+          <button onClick={() => onRemoveHistory(h.name)}
+            style={{background:"transparent",border:"none",color:"rgba(255,255,255,0.25)",cursor:"pointer",fontSize:16,padding:"4px 6px",borderRadius:6,transition:"all 0.15s",lineHeight:1,flexShrink:0}}
+            onMouseEnter={e=>{e.currentTarget.style.color="rgba(255,100,100,0.8)";e.currentTarget.style.background="rgba(255,80,80,0.1)";}}
+            onMouseLeave={e=>{e.currentTarget.style.color="rgba(255,255,255,0.25)";e.currentTarget.style.background="transparent";}}
+          >×</button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
           <div className="home-cta">
             <div className="home-cta-text">
               <h3>Get instant forecasts</h3>
@@ -365,7 +405,7 @@ function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoadin
 }
 
 /* ── WEATHER PAGE ── */
-function WeatherPage({ weather, forecast, onBack, onSearch }) {
+function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemoveHistory }) {
   const condition  = weather.weather[0].main;
   const isNight    = weather.dt < weather.sys.sunrise || weather.dt > weather.sys.sunset;
   const heroBg     = bgClass(condition, isNight);
@@ -379,6 +419,7 @@ function WeatherPage({ weather, forecast, onBack, onSearch }) {
   };
 
   const [favs, setFavs] = useState(getFavourites);
+  const [showHistory, setShowHistory] = useState(false);
   const isFav = favs.some(f => f.name===weather.name && f.country===weather.sys.country);
   const toggleFav = () => {
     const updated = isFav
@@ -414,6 +455,49 @@ function WeatherPage({ weather, forecast, onBack, onSearch }) {
         <div className="weather-topbar-inner">
           <button className="back-btn" onClick={onBack}>← Home</button>
           <SearchBar compact onSearch={onSearch} placeholder="Search another city…" />
+
+          {/* History dropdown */}
+{history.length > 0 && (
+  <div style={{position:"relative",flexShrink:0}}>
+    <button
+      onClick={() => setShowHistory(p => !p)}
+      title="Recent searches"
+      style={{height:35,padding:"0 14px",borderRadius:20,border:`1px solid ${showHistory?"rgba(0,164,167,0.5)":"rgba(255,255,255,0.2)"}`,background:showHistory?"rgba(0,164,167,0.2)":"rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.8)",cursor:"pointer",fontSize:14,fontFamily:"inherit",display:"flex",alignItems:"center",gap:6,transition:"all 0.2s"}}
+    >
+      🕐 <span style={{fontSize:12,fontWeight:600}}>{history.length}</span>
+    </button>
+    {showHistory && (
+      <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,width:280,background:"#0a1628",border:"1px solid rgba(0,164,167,0.25)",borderRadius:12,boxShadow:"0 12px 40px rgba(0,0,0,0.5)",zIndex:100,overflow:"hidden"}}>
+        <div style={{padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,0.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <span style={{fontSize:13,fontWeight:700,color:"white"}}>Recent Searches</span>
+          <span style={{fontSize:11,color:"rgba(255,255,255,0.3)"}}>{history.length} / 10</span>
+        </div>
+        <div style={{maxHeight:260,overflowY:"auto"}}>
+          {history.map((h, i) => (
+            <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.04)",transition:"background 0.15s"}}
+              onMouseEnter={e=>e.currentTarget.style.background="rgba(0,164,167,0.08)"}
+              onMouseLeave={e=>e.currentTarget.style.background="transparent"}
+            >
+              <button onClick={() => { onSearch(h.name); setShowHistory(false); }} style={{flex:1,background:"none",border:"none",color:"white",cursor:"pointer",textAlign:"left",fontFamily:"inherit",padding:0,display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:13}}>🔍</span>
+                <div style={{flex:1}}>
+                  <span style={{fontSize:13,fontWeight:600}}>{h.name}</span>
+                  {h.country && <span style={{fontSize:11,color:"rgba(255,255,255,0.35)",marginLeft:6}}>{h.country}</span>}
+                </div>
+                <span style={{fontSize:11,color:"rgba(255,255,255,0.25)"}}>{fmtHistoryTime(h.time)}</span>
+              </button>
+              <button onClick={() => onRemoveHistory(h.name)}
+                style={{background:"transparent",border:"none",color:"rgba(255,255,255,0.2)",cursor:"pointer",fontSize:14,padding:"2px 4px",borderRadius:4,transition:"color 0.15s",lineHeight:1}}
+                onMouseEnter={e=>e.currentTarget.style.color="rgba(255,100,100,0.8)"}
+                onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.2)"}
+              >×</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+)}
 
           {/* Favourite toggle */}
           <button onClick={toggleFav} title={isFav?"Remove from favourites":"Save to favourites"} style={{height:35,padding:"0 16px",borderRadius:20,border:`1px solid ${isFav?"rgba(255,200,0,0.5)":"rgba(255,255,255,0.2)"}`,background:isFav?"rgba(255,200,0,0.15)":"rgba(255,255,255,0.1)",color:isFav?"#ffd700":"rgba(255,255,255,0.7)",cursor:"pointer",fontSize:18,fontFamily:"inherit",display:"flex",alignItems:"center",gap:6,transition:"all 0.2s",flexShrink:0}}>
@@ -776,6 +860,8 @@ function App() {
       const [wData,fData] = await Promise.all([wRes.json(),fRes.json()]);
       setWeather(wData); setForecast(fData.list); setPage("weather");
       localStorage.setItem("wo_last_city", wData.name);
+      addToHistory(wData.name, wData.sys?.country || "");
+      refreshHistory();
     } catch(err) { setError(err.message); }
     finally { setLoading(false); }
   };
@@ -833,13 +919,19 @@ function App() {
 
       {!loading && page==="home" && (
         <HomePage
-          onSearch={handleSearch} error={error} loading={loading} onNavigate={setPage}
-          onGeoLocate={handleGeoLocate} geoLoading={geoLoading} geoError={geoError}
+        onSearch={handleSearch} error={error} loading={loading} onNavigate={setPage}
+        onGeoLocate={handleGeoLocate} geoLoading={geoLoading} geoError={geoError}
+        history={history}
+        onRemoveHistory={(name) => { removeFromHistory(name); refreshHistory(); }}
+        onClearHistory={() => { clearHistory(); refreshHistory(); }}
         />
       )}
 
       {!loading && page==="weather" && weather && (
-        <WeatherPage weather={weather} forecast={forecast} onBack={handleBack} onSearch={handleSearch} />
+        <WeatherPage weather={weather} forecast={forecast} onBack={handleBack} onSearch={handleSearch}
+        history={history}
+        onRemoveHistory={(name) => { removeFromHistory(name); refreshHistory(); }}
+        />
       )}
 
       {page==="tempmap" && <div><div style={{background:"#003a70",padding:"10px 20px"}}><button className="back-btn" onClick={handleBack}>← Home</button></div><TemperatureMap /></div>}
