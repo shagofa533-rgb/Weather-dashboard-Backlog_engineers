@@ -51,7 +51,33 @@ function getFavourites() {
 function saveFavourites(list) {
   localStorage.setItem("wo_favourites", JSON.stringify(list));
 }
+/* ── SEARCH HISTORY helpers ── */
+const HISTORY_KEY = "wo_search_history";
+const HISTORY_MAX = 10;
 
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }
+  catch { return []; }
+}
+function addToHistory(cityName, country) {
+  const prev = getHistory().filter(h => h.name.toLowerCase() !== cityName.toLowerCase());
+  const updated = [{ name: cityName, country, time: Date.now() }, ...prev].slice(0, HISTORY_MAX);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+}
+function removeFromHistory(cityName) {
+  const updated = getHistory().filter(h => h.name.toLowerCase() !== cityName.toLowerCase());
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+}
+function clearHistory() {
+  localStorage.removeItem(HISTORY_KEY);
+}
+function fmtHistoryTime(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60)    return "Just now";
+  if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
 function bgClass(condition, isNight) {
   const c = condition?.toLowerCase() || "";
   if (c.includes("thunder")) return "weather-storm";
@@ -79,7 +105,7 @@ function SkyScene({ condition, isNight, windSpeed = 0 }) {
 
   let children = null;
 
-  /* ── CLEAR NIGHT ── */
+  /* CLEAR NIGHT */
   if (c === "clear" && isNight) {
     children = (
       <>
@@ -89,7 +115,7 @@ function SkyScene({ condition, isNight, windSpeed = 0 }) {
     );
   }
 
-  /* ── CLEAR DAY ── */
+  /* CLEAR DAY */
   else if (c === "clear" && !isNight) {
     const clouds = [
       { w:180, h:48, top:"18%", left:"-5%",  dur:"55s", delay:"0s",   op:0.75 },
