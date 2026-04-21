@@ -115,7 +115,7 @@ function HomePage({ onSearch, error, loading }) {
 /* ────────────────────────────────────────
    WEATHER DETAIL PAGE
 ─────────────────────────────────────── */
-function WeatherPage({ weather, forecast, onBack, onSearch }) {
+function WeatherPage({ weather, forecast, onBack, onSearch, error}) {
   const condition   = weather.weather[0].main;
   const isNight     = weather.dt < weather.sys.sunrise || weather.dt > weather.sys.sunset;
   const heroBg      = bgClass(condition, isNight);
@@ -157,7 +157,12 @@ function WeatherPage({ weather, forecast, onBack, onSearch }) {
           </button>
           <SearchBar compact onSearch={onSearch} placeholder="Search another city…" />
         </div>
-      </div>
+        {error && (
+          <p style={{ textAlign: "center", color: "#ff6b6b", padding: "6px 0", fontSize: 14 }}>
+            ⚠️ {error}
+          </p>
+        )}
+    </div>
 
       {/* Current weather hero */}
       <div className={`current-weather-hero ${heroBg}`}>
@@ -396,8 +401,9 @@ function App() {
           forecast={forecast}
           onBack={handleBack}
           onSearch={handleSearch}
+          error={error}
         />
-      )}
+     )}
     </>
   );
 }

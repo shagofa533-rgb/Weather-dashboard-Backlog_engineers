@@ -1171,6 +1171,10 @@ function App() {
         localStorage.setItem("wo_last_city", wData.name);
     } catch (err) {
         setError(err.message);
+        setWeather(null);
+        setForecast([]);
+        setPage("home");
+
     } finally {
         setLoading(false);
     }

@@ -862,7 +862,14 @@ function App() {
       localStorage.setItem("wo_last_city", wData.name);
       addToHistory(wData.name, wData.sys?.country || "");
       refreshHistory();
-    } catch(err) { setError(err.message); }
+    } catch(err) { 
+      setError(err.message);
+      setWeather(null);
+      setForecast([]);
+      setPage("home");
+      localStorage.removeItem("wo_last_city"); 
+
+    }
     finally { setLoading(false); }
   };
 
