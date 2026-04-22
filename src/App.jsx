@@ -467,7 +467,7 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
       🕐 <span style={{fontSize:12,fontWeight:600}}>{history.length}</span>
     </button>
     {showHistory && (
-      <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,width:280,background:"#0a1628",border:"1px solid rgba(0,164,167,0.25)",borderRadius:12,boxShadow:"0 12px 40px rgba(0,0,0,0.5)",zIndex:100,overflow:"hidden"}}>
+      <div className="history-dropdown" style={{position:"absolute",top:"calc(100% + 8px)",right:0,width:280,background:"#0a1628",border:"1px solid rgba(0,164,167,0.25)",borderRadius:12,boxShadow:"0 12px 40px rgba(0,0,0,0.5)",zIndex:100,overflow:"hidden"}}>
         <div style={{padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,0.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <span style={{fontSize:13,fontWeight:700,color:"white"}}>Recent Searches</span>
           <span style={{fontSize:11,color:"rgba(255,255,255,0.3)"}}>{history.length} / 10</span>

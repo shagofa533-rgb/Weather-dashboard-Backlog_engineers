@@ -1823,3 +1823,20 @@
 .app-root.light .weather-topbar button:hover {
   background: #93c5fd !important;
 }
+
+/* ── LIGHT MODE — HISTORY DROPDOWN FIX ── */
+.app-root.light .history-dropdown {
+  background: #ffffff !important;
+  border-color: #93c5fd !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15) !important;
+}
+
+.app-root.light .history-dropdown * {
+  color: #1e3a5f !important;
+  border-color: #e2e8f0 !important;
+}
+
+.app-root.light .history-dropdown > div:first-child {
+  background: #dbeafe !important;
+  border-bottom: 1px solid #93c5fd !important;
+}
