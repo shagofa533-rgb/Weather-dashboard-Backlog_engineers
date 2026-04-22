@@ -2,11 +2,16 @@ import { useState } from "react";
 
 function SearchBar({ onSearch, compact = false, placeholder = "Enter city name" }) {
   const [city, setCity] = useState("");
+  const [emptyError, setEmptyError] = useState(false);
 
   const handleSearch = () => {
     if (city.trim() !== "") {
       onSearch(city.trim());
       setCity("");
+    setEmptyError(false);
+    } else {
+      setEmptyError(true);
+      setTimeout(() => setEmptyError(false), 3000);
     }
   };
 
@@ -52,6 +57,11 @@ function SearchBar({ onSearch, compact = false, placeholder = "Enter city name" 
       <button className="hero-search-btn" onClick={handleSearch}>
         Get Forecast
       </button>
+      {emptyError && (
+        <p style={{ color: "#ff6b6b", fontSize: 13, marginTop: 8, textAlign: "center" }}>
+          ⚠️ Please enter a city name before searching.
+        </p>
+      )}
     </div>
   );
 }
