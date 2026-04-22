@@ -231,7 +231,7 @@ function SkyScene({ condition, isNight, windSpeed = 0 }) {
 }
 
 /* ── HOME PAGE ── */
-function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoading, geoError, history = [], onRemoveHistory, onClearHistory }) {
+function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoading, geoError, history = [], onRemoveHistory, onClearHistory, theme = "dark" }) {
   const exploreRef = useRef(null);
   const quickLinks = [
     { icon:"🌡️", title:"Temperature Maps", desc:"High-resolution global temperature charts",  key:"tempmap",  live:true },
@@ -338,7 +338,7 @@ function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoadin
           )}
 
           {history.length > 0 && (
-  <div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(0,164,167,0.15)",borderRadius:16,padding:"28px 32px",marginBottom:28}}>
+  <div style={{background: theme==="light" ? "#dbeafe" : "rgba(255,255,255,0.03)", border: `1px solid ${theme==="light" ? "#93c5fd" : "rgba(0,164,167,0.15)"}`, borderRadius:16, padding:"28px 32px", marginBottom:28}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18,flexWrap:"wrap",gap:10}}>
       <div style={{display:"flex",alignItems:"center",gap:10}}>
         <span style={{fontSize:20}}>🕐</span>
@@ -354,17 +354,17 @@ function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoadin
     </div>
     <div style={{display:"flex",flexDirection:"column",gap:8}}>
       {history.map((h, i) => (
-        <div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 16px",transition:"all 0.2s",gap:12}}
-          onMouseEnter={e=>e.currentTarget.style.background="rgba(0,164,167,0.08)"}
-          onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.04)"}
+        <div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background: theme==="light" ? "#bfdbfe" : "rgba(255,255,255,0.04)", border: `1px solid ${theme==="light" ? "#93c5fd" : "rgba(255,255,255,0.07)"}`, borderRadius:10, padding:"10px 16px", transition:"all 0.2s", gap:12}}
+        onMouseEnter={e=>e.currentTarget.style.background= theme==="light" ? "#93c5fd" : "rgba(0,164,167,0.08)"}
+        onMouseLeave={e=>e.currentTarget.style.background= theme==="light" ? "#bfdbfe" : "rgba(255,255,255,0.04)"}
         >
           <button onClick={() => onSearch(h.name)} style={{flex:1,background:"none",border:"none",color:"white",cursor:"pointer",textAlign:"left",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,padding:0}}>
             <span style={{fontSize:16}}>🔍</span>
             <div>
-              <span style={{fontSize:15,fontWeight:600,color:"white"}}>{h.name}</span>
+              <span style={{fontSize:15,fontWeight:600,color: theme==="light" ? "#1e3a5f" : "white"}}>{h.name}</span>
               {h.country && <span style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginLeft:8}}>{h.country}</span>}
             </div>
-            <span style={{fontSize:12,color:"rgba(255,255,255,0.3)",marginLeft:"auto",paddingRight:12}}>{fmtHistoryTime(h.time)}</span>
+            <span style={{fontSize:12,color: theme==="light" ? "#3b82f6" : "rgba(255,255,255,0.3)",marginLeft:"auto",paddingRight:12}}>{fmtHistoryTime(h.time)}</span>
           </button>
           <button onClick={() => onRemoveHistory(h.name)}
             style={{background:"transparent",border:"none",color:"rgba(255,255,255,0.25)",cursor:"pointer",fontSize:16,padding:"4px 6px",borderRadius:6,transition:"all 0.15s",lineHeight:1,flexShrink:0}}
