@@ -842,6 +842,14 @@ function App() {
   const [geoError,  setGeoError]  = useState(null);
   const [history,   setHistory]   = useState(getHistory);
   const refreshHistory = () => setHistory(getHistory());
+  const [theme, setTheme] = useState(
+  () => localStorage.getItem("wo_theme") || "dark"
+);
+const toggleTheme = () => {
+  const next = theme === "dark" ? "light" : "dark";
+  setTheme(next);
+  localStorage.setItem("wo_theme", next);
+};
 
   useEffect(() => {
     const saved = localStorage.getItem("wo_last_city");
@@ -906,8 +914,8 @@ function App() {
   };
 
   return (
-    <>
-      <header className="mo-header">
+  <div className={`app-root ${theme}`}>
+    <header className="mo-header">
         <div className="mo-logo" onClick={handleBack}>
           <div className="mo-logo-mark">
             <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -920,7 +928,25 @@ function App() {
             <div className="mo-logo-sub">Global Forecast Service</div>
           </div>
         </div>
-      </header>
+
+          {/* Dark / Light mode toggle */}
+        <button
+        onClick={toggleTheme}
+        title={theme === "dark" ? "Switch to Light mode" : "Switch to Dark mode"}
+        style={{
+          marginLeft:"auto", height:36, padding:"0 16px",
+          borderRadius:50, border:"1px solid rgba(255,255,255,0.2)",
+          background:"rgba(255,255,255,0.08)", color:"white",
+          cursor:"pointer", fontSize:14, fontWeight:600,
+          fontFamily:"inherit", display:"flex", alignItems:"center",
+          gap:8, transition:"all 0.2s",
+        }}
+        onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.15)"}
+        onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.08)"}
+      >
+        {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+      </button>
+    </header>
 
       {loading && <div className="loading-wrap"><div className="loading-spinner"></div><p className="loading-text">Fetching forecast…</p></div>}
 
@@ -931,6 +957,7 @@ function App() {
         history={history}
         onRemoveHistory={(name) => { removeFromHistory(name); refreshHistory(); }}
         onClearHistory={() => { clearHistory(); refreshHistory(); }}
+        theme={theme} onToggleTheme={toggleTheme}
         />
       )}
 
@@ -938,6 +965,7 @@ function App() {
         <WeatherPage weather={weather} forecast={forecast} onBack={handleBack} onSearch={handleSearch}
         history={history}
         onRemoveHistory={(name) => { removeFromHistory(name); refreshHistory(); }}
+        theme={theme} onToggleTheme={toggleTheme}
         />
       )}
 
@@ -947,7 +975,7 @@ function App() {
       {page==="help"     && <HelpPage        onBack={handleBack} />}
 
       <CookieBanner />
-    </>
+    </div>
   );
 }
 
