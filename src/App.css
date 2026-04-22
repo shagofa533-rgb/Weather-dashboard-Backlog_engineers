@@ -1791,3 +1791,35 @@
 .app-root.light .forecast-day  { color: #1e3a5f; }
 .app-root.light .forecast-date { color: #2563eb; }
 .app-root.light .forecast-desc { color: #3b82f6; }
+
+/* ── LIGHT MODE — TOPBAR SEARCH FIX ── */
+.app-root.light .topbar-search-box {
+  background: #ffffff;
+  border: 1px solid #93c5fd;
+  border-radius: 20px;
+}
+
+.app-root.light .topbar-search-input {
+  background: transparent;
+  color: #1e3a5f;
+}
+
+.app-root.light .topbar-search-input::placeholder {
+  color: #6b9cc4;
+}
+
+.app-root.light .topbar-search-btn {
+  background: #003a70;
+  color: #ffffff;
+}
+
+/* History and favourite buttons in topbar */
+.app-root.light .weather-topbar button {
+  background: #bfdbfe !important;
+  border-color: #93c5fd !important;
+  color: #1e3a5f !important;
+}
+
+.app-root.light .weather-topbar button:hover {
+  background: #93c5fd !important;
+}
