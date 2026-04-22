@@ -1509,3 +1509,285 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ── LIGHT MODE ─────────────────────────────── */
+.app-root.light {
+  background: #f0f4f8;
+  color: #1a202c;
+}
+
+.app-root.light .mo-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+}
+
+.app-root.light .mo-logo-text { color: #003a70; }
+.app-root.light .mo-logo-sub  { color: #718096; }
+
+.app-root.light .home-hero {
+  background: linear-gradient(160deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+}
+
+.app-root.light .hero-title    { color: #1e3a5f; }
+.app-root.light .hero-subtitle { color: #374151; }
+.app-root.light .hero-badge    { background: rgba(0,58,112,0.1); color: #003a70; }
+
+.app-root.light .home-content {
+  background: #f0f4f8;
+}
+
+.app-root.light .home-section-title { color: #1a202c; }
+.app-root.light .home-section-eyebrow { color: #4a5568; }
+
+.app-root.light .quick-link-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #1a202c;
+}
+.app-root.light .quick-link-card:hover {
+  background: #ebf8ff;
+  border-color: #90cdf4;
+}
+.app-root.light .quick-link-title { color: #1a202c; }
+.app-root.light .quick-link-desc  { color: #718096; }
+
+.app-root.light .forecast-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #1a202c;
+}
+
+.app-root.light .info-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #1a202c;
+}
+.app-root.light .info-card-label { color: #4a5568; }
+.app-root.light .info-card-value { color: #1a202c; }
+.app-root.light .info-card-sub   { color: #718096; }
+
+.app-root.light .section-heading { color: #1a202c; }
+
+.app-root.light .weather-topbar {
+  background: #ffffffee;
+  border-bottom: 1px solid #e2e8f0;
+  backdrop-filter: blur(12px);
+}
+
+.app-root.light .back-btn {
+  background: rgba(0,58,112,0.08);
+  color: #003a70;
+  border-color: rgba(0,58,112,0.2);
+}
+
+.app-root.light .mo-footer {
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  color: #718096;
+}
+
+.app-root.light .home-cta {
+  background: #003a70;
+  color: white;
+}
+
+/* ── LIGHT MODE FIXES ───────────────────────── */
+
+/* View FAQs / Contact Support buttons */
+.app-root.light .home-cta-btn {
+  background: #ffffff;
+  color: #003a70;
+  border: 2px solid #ffffff;
+}
+.app-root.light .home-cta-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Recent Searches section */
+.app-root.light .home-content-inner > div[style] {
+  background: #ffffff !important;
+  border-color: #cbd5e0 !important;
+}
+
+/* Recent search individual rows */
+.app-root.light .home-content-inner > div[style] button {
+  color: #1a202c !important;
+}
+
+/* Recent search city name */
+.app-root.light .home-content-inner > div[style] span {
+  color: #2d3748 !important;
+}
+
+/* Saved Locations section */
+.app-root.light .home-content-inner > div {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+/* Saved location pills */
+.app-root.light .home-content-inner button {
+  background: rgba(0, 58, 112, 0.08) !important;
+  border-color: rgba(0, 58, 112, 0.25) !important;
+  color: #003a70 !important;
+}
+.app-root.light .home-content-inner button:hover {
+  background: rgba(0, 58, 112,0.15) !important;
+}
+
+/* Section headings inside cards */
+.app-root.light h3 {
+  color: #1a202c !important;
+}
+
+/* Timestamp / country labels in history */
+.app-root.light span[style*="rgba(255,255,255,0.3)"],
+.app-root.light span[style*="rgba(255,255,255,0.4)"],
+.app-root.light span[style*="rgba(255,255,255,0.5)"] {
+  color: #718096 !important;
+}
+
+/* Help & Support strip */
+.app-root.light .home-content-inner > div:last-child {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+/* FAQ accordion */
+.app-root.light .home-content-inner > div > div {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #1a202c !important;
+}
+
+/* Clear all button in history */
+.app-root.light button[style*="rgba(255,255,255,0.12)"] {
+  border-color: #cbd5e0 !important;
+  color: #718096 !important;
+}
+
+/* Remove × button in history */
+.app-root.light button[style*="rgba(255,255,255,0.25)"] {
+  color: #a0aec0 !important;
+}
+
+/* Search icon in history rows */
+.app-root.light .home-content-inner span[style*="fontSize:16"] {
+  color: #4a5568 !important;
+}
+
+/* ── LIGHT MODE — LIGHT BLUE THEME ─────────── */
+
+.app-root.light {
+  background: #e8f4fd;
+  color: #1a202c;
+}
+
+.app-root.light .home-content {
+  background: #e8f4fd;
+}
+
+.app-root.light .home-hero {
+  background: linear-gradient(160deg, #bfdbfe 0%, #93c5fd 50%, #60a5fa 100%);
+}
+
+/* All cards and sections */
+.app-root.light .quick-link-card,
+.app-root.light .forecast-card,
+.app-root.light .info-card,
+.app-root.light .home-cta,
+.app-root.light .mo-footer,
+.app-root.light .weather-topbar {
+  background: #dbeafe !important;
+  border-color: #93c5fd !important;
+}
+
+/* Recent Searches + Saved Locations + Help strip */
+.app-root.light .home-content-inner > div {
+  background: #dbeafe !important;
+  border-color: #93c5fd !important;
+}
+
+/* History rows */
+.app-root.light .home-content-inner > div[style] {
+  background: #dbeafe !important;
+  border-color: #93c5fd !important;
+}
+
+/* Individual history item rows */
+.app-root.light .home-content-inner > div > div {
+  background: #bfdbfe !important;
+  border-color: #93c5fd !important;
+}
+
+/* Header */
+.app-root.light .mo-header {
+  background: #bfdbfe;
+  border-bottom: 1px solid #93c5fd;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+}
+
+/* All text */
+.app-root.light .mo-logo-text   { color: #1e3a5f; }
+.app-root.light .mo-logo-sub    { color: #2563eb; }
+.app-root.light .section-heading{ color: #1e3a5f; }
+.app-root.light h3              { color: #1e3a5f !important; }
+
+/* Saved location pills */
+.app-root.light .home-content-inner button {
+  background: #bfdbfe !important;
+  border-color: #3b82f6 !important;
+  color: #1e3a5f !important;
+}
+.app-root.light .home-content-inner button:hover {
+  background: #93c5fd !important;
+}
+
+/* Back button */
+.app-root.light .back-btn {
+  background: #bfdbfe;
+  color: #1e3a5f;
+  border-color: #93c5fd;
+}
+
+/* All muted text — timestamps, country codes etc */
+.app-root.light span[style*="rgba(255,255,255,0.3)"],
+.app-root.light span[style*="rgba(255,255,255,0.4)"],
+.app-root.light span[style*="rgba(255,255,255,0.5)"] {
+  color: #2563eb !important;
+}
+
+/* Clear all + remove buttons */
+.app-root.light button[style*="rgba(255,255,255,0.12)"] {
+  border-color: #93c5fd !important;
+  color: #3b82f6 !important;
+}
+.app-root.light button[style*="rgba(255,255,255,0.25)"] {
+  color: #93c5fd !important;
+}
+
+/* Theme toggle button in header */
+.app-root.light .mo-header button {
+  background: #93c5fd;
+  border-color: #3b82f6;
+  color: #1e3a5f;
+}
+.app-root.light .mo-header button:hover {
+  background: #60a5fa;
+}
+
+/* Footer links */
+.app-root.light .mo-footer a {
+  color: #2563eb;
+}
+
+/* Info card labels and values */
+.app-root.light .info-card-label { color: #1e3a5f; }
+.app-root.light .info-card-value { color: #1e3a5f; }
+.app-root.light .info-card-sub   { color: #2563eb; }
+
+/* Forecast cards text */
+.app-root.light .forecast-day  { color: #1e3a5f; }
+.app-root.light .forecast-date { color: #2563eb; }
+.app-root.light .forecast-desc { color: #3b82f6; }
