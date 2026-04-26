@@ -468,28 +468,29 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
     </button>
     {showHistory && (
       <div className="history-dropdown" style={{position:"absolute",top:"calc(100% + 8px)",right:0,width:280,background:"#0a1628",border:"1px solid rgba(0,164,167,0.25)",borderRadius:12,boxShadow:"0 12px 40px rgba(0,0,0,0.5)",zIndex:100,overflow:"hidden"}}>
-        <div style={{padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,0.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <span style={{fontSize:13,fontWeight:700,color:"white"}}>Recent Searches</span>
-          <span style={{fontSize:11,color:"rgba(255,255,255,0.3)"}}>{history.length} / 10</span>
+        <div className="hd-header" style={{padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,0.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <span className="hd-title" style={{fontSize:13,fontWeight:700}}>Recent Searches</span>
+          <span className="hd-count" style={{fontSize:11}}>{history.length} / 10</span>
         </div>
         <div style={{maxHeight:260,overflowY:"auto"}}>
           {history.map((h, i) => (
-            <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.04)",transition:"background 0.15s"}}
+            <div key={i} className="hd-row" style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.04)",transition:"background 0.15s"}}
               onMouseEnter={e=>e.currentTarget.style.background="rgba(0,164,167,0.08)"}
               onMouseLeave={e=>e.currentTarget.style.background="transparent"}
             >
-              <button onClick={() => { onSearch(h.name); setShowHistory(false); }} style={{flex:1,background:"none",border:"none",color:"white",cursor:"pointer",textAlign:"left",fontFamily:"inherit",padding:0,display:"flex",alignItems:"center",gap:8}}>
+              <button onClick={() => { onSearch(h.name); setShowHistory(false); }} className="hd-btn" style={{flex:1,background:"none",border:"none",cursor:"pointer",textAlign:"left",fontFamily:"inherit",padding:0,display:"flex",alignItems:"center",gap:8}}>
                 <span style={{fontSize:13}}>🔍</span>
                 <div style={{flex:1}}>
-                  <span style={{fontSize:13,fontWeight:600}}>{h.name}</span>
-                  {h.country && <span style={{fontSize:11,color:"rgba(255,255,255,0.35)",marginLeft:6}}>{h.country}</span>}
+                  <span className="hd-city" style={{fontSize:13,fontWeight:600}}>{h.name}</span>
+                  {h.country && <span className="hd-country" style={{fontSize:11,marginLeft:6}}>{h.country}</span>}
                 </div>
-                <span style={{fontSize:11,color:"rgba(255,255,255,0.25)"}}>{fmtHistoryTime(h.time)}</span>
+                <span className="hd-time" style={{fontSize:11}}>{fmtHistoryTime(h.time)}</span>
               </button>
               <button onClick={() => onRemoveHistory(h.name)}
-                style={{background:"transparent",border:"none",color:"rgba(255,255,255,0.2)",cursor:"pointer",fontSize:14,padding:"2px 4px",borderRadius:4,transition:"color 0.15s",lineHeight:1}}
+                className="hd-remove"
+                style={{background:"transparent",border:"none",cursor:"pointer",fontSize:14,padding:"2px 4px",borderRadius:4,transition:"color 0.15s",lineHeight:1}}
                 onMouseEnter={e=>e.currentTarget.style.color="rgba(255,100,100,0.8)"}
-                onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.2)"}
+                onMouseLeave={e=>e.currentTarget.style.color=""}
               >×</button>
             </div>
           ))}

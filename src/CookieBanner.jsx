@@ -159,10 +159,11 @@ export default function CookieBanner() {
                 onClick={() => setShowSettings(true)}
                 style={btn("rgba(0,164,167,0.12)", "#00d4d8", "1px solid rgba(0,164,167,0.3)")}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(0,164,167,0.2)"}
-                onMouseLeave={e => e.currentTarget.style.background = "rgba(0,164,167,0.12)"}
-                Customise
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(0,164,167,0.12)"}  
               >
+                Customise
               </button>
+              
               <button
                 onClick={acceptAll}
                 style={btn("linear-gradient(135deg,#00a4a7,#0065bd)", "white", "none")}
