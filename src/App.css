@@ -1508,6 +1508,14 @@
   .info-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .weather-topbar {
+    padding: 12px 16px;
+  }
+  .topbar-search-box {
+    flex-basis: 100%;
+    max-width: 100%;
+    order: 2;
+  }
 }
 
 /* ── LIGHT MODE ─────────────────────────────── */
