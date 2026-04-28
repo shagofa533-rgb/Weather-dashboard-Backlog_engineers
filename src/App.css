@@ -655,7 +655,7 @@
 ─────────────────────────────────────── */
 .weather-page {
   min-height: calc(100vh - var(--header-h));
-  background: var(--mo-grey);
+  background: #071422;
 }
 
 /* Page top bar */
@@ -1265,7 +1265,7 @@
   font-family: var(--font-display);
   font-size: 20px;
   font-weight: 600;
-  color: var(--mo-navy);
+  color:rgba(255,255,255,0.9);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -1276,7 +1276,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--mo-mid-grey);
+  background: rgba(255,255,255,0.1);
 }
 
 /* Forecast cards */
@@ -1288,11 +1288,11 @@
 }
 
 .forecast-card {
-  background: var(--mo-white);
+  background: #0d1f33;
   border-radius: var(--radius);
   padding: 18px 14px;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--mo-mid-grey);
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1310,14 +1310,14 @@
 .forecast-day {
   font-size: 12px;
   font-weight: 700;
-  color: var(--mo-dark-grey);
+  color: rgba(255,255,255,0.85);
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 
 .forecast-date {
   font-size: 11px;
-  color: #9aa3ae;
+  color: rgba(255,255,255,0.45);
 }
 
 .forecast-icon {
@@ -1334,17 +1334,17 @@
 .forecast-high {
   font-size: 20px;
   font-weight: 700;
-  color: var(--mo-navy);
+  color: white;
 }
 
 .forecast-low {
   font-size: 15px;
-  color: var(--mo-dark-grey);
+  color: rgba(255,255,255,0.55);
 }
 
 .forecast-desc {
   font-size: 12px;
-  color: var(--mo-dark-grey);
+  color: rgba(255,255,255,0.5);
   text-align: center;
   text-transform: capitalize;
   line-height: 1.3;
@@ -1352,7 +1352,7 @@
 
 .forecast-detail {
   font-size: 11px;
-  color: #9aa3ae;
+  color: rgba(255,255,255,0.4);
   display: flex;
   gap: 8px;
 }
@@ -1366,17 +1366,17 @@
 }
 
 .info-card {
-  background: var(--mo-white);
+  background: #0d1f33;
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--mo-mid-grey);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 .info-card-label {
   font-size: 12px;
   font-weight: 700;
-  color: var(--mo-dark-grey);
+  color: rgba(255,255,255,0.6);
   text-transform: uppercase;
   letter-spacing: 0.7px;
   margin-bottom: 10px;
@@ -1389,19 +1389,19 @@
   font-family: var(--font-display);
   font-size: 28px;
   font-weight: 600;
-  color: var(--mo-navy);
+  color: white;
   margin-bottom: 4px;
 }
 
 .info-card-sub {
   font-size: 12px;
-  color: var(--mo-dark-grey);
+  color: rgba(255,255,255,0.5);
 }
 
 /* Progress bar (humidity) */
 .progress-bar {
   height: 6px;
-  background: var(--mo-mid-grey);
+  background: rgba(255,255,255,0.1);
   border-radius: 3px;
   margin-top: 10px;
   overflow: hidden;
@@ -1437,7 +1437,7 @@
 .sun-time {
   font-size: 20px;
   font-weight: 600;
-  color: var(--mo-navy);
+  color: white;
 }
 
 .sun-sep {
@@ -1598,6 +1598,29 @@
 .app-root.light .home-cta {
   background: #003a70;
   color: white;
+}
+
+.app-root.light .forecast-high   { 
+  color: #1e3a5f; 
+}
+.app-root.light .forecast-low    { 
+  color: #2563eb; 
+}
+.app-root.light .forecast-detail { 
+  color: #3b82f6; 
+}
+.app-root.light .sun-time        {
+   color: #1e3a5f;
+}
+.app-root.light .progress-bar    {
+   background: #bfdbfe; 
+} 
+.app-root.light .weather-page {
+  background: #e8f4fd;
+}
+
+.app-root.light .section-heading::after {
+  background: #93c5fd;
 }
 
 /* ── LIGHT MODE FIXES ───────────────────────── */
@@ -1864,3 +1887,4 @@
 .app-root.light .hd-time           { color: #6b9cc4 !important; opacity: 1; }
 .app-root.light .hd-remove         { color: #6b9cc4 !important; opacity: 1; }
 .app-root.light .hd-row            { border-color: #e2e8f0 !important; }
+
