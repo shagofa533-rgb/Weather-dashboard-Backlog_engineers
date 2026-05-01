@@ -663,6 +663,8 @@
   background: var(--mo-navy);
   padding: 20px 24px;
   color: white;
+  position: relative; 
+  z-index: 50
 }
 
 .weather-topbar-inner {
