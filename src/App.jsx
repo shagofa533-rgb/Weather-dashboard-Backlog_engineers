@@ -385,17 +385,17 @@ function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoadin
             <button className="home-cta-btn" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}>Search a city →</button>
           </div>
 
-          <div style={{marginTop:20,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"32px 36px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:28,flexWrap:"wrap"}}>
+          <div className="help-strip" style={{marginTop:20,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"32px 36px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:28,flexWrap:"wrap"}}>
             <div style={{display:"flex",alignItems:"center",gap:18}}>
               <div style={{width:52,height:52,borderRadius:14,flexShrink:0,background:"linear-gradient(135deg,rgba(0,164,167,0.2),rgba(0,101,189,0.2))",border:"1px solid rgba(0,164,167,0.25)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>❓</div>
               <div>
-                <div style={{fontSize:17,fontWeight:700,color:"white",marginBottom:4}}>Help & Support</div>
-                <div style={{fontSize:13,color:"rgba(255,255,255,0.4)",lineHeight:1.5,maxWidth:380}}>Having trouble finding a forecast? Browse our FAQs or get in touch with our support team.</div>
+                <div className="help-strip-title" style={{fontSize:17,fontWeight:700,color:"white",marginBottom:4}}>Help & Support</div>
+                <div className="help-strip-desc" style={{fontSize:13,color:"rgba(255,255,255,0.4)",lineHeight:1.5,maxWidth:380}}>Having trouble finding a forecast? Browse our FAQs or get in touch with our support team.</div>
               </div>
             </div>
             <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
               <button onClick={()=>onNavigate("help")} style={{background:"linear-gradient(135deg,#00a4a7,#0065bd)",border:"none",color:"white",fontFamily:"inherit",fontSize:14,fontWeight:600,padding:"11px 24px",borderRadius:50,cursor:"pointer",boxShadow:"0 4px 16px rgba(0,101,189,0.35)",transition:"all 0.2s"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"} onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>View FAQs</button>
-              <button onClick={()=>onNavigate("help")} style={{background:"transparent",border:"1px solid rgba(255,255,255,0.15)",color:"rgba(255,255,255,0.7)",fontFamily:"inherit",fontSize:14,fontWeight:600,padding:"11px 24px",borderRadius:50,cursor:"pointer",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.35)";e.currentTarget.style.color="white";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.15)";e.currentTarget.style.color="rgba(255,255,255,0.7)";}}>Contact Support</button>
+              <button className="help-strip-outline-btn" onClick={()=>onNavigate("help")} style={{background:"transparent",border:"1px solid rgba(255,255,255,0.15)",color:"rgba(255,255,255,0.7)",fontFamily:"inherit",fontSize:14,fontWeight:600,padding:"11px 24px",borderRadius:50,cursor:"pointer",transition:"all 0.2s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.35)";e.currentTarget.style.color="white";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.15)";e.currentTarget.style.color="rgba(255,255,255,0.7)";}}>Contact Support</button>
             </div>
           </div>
         </div>
@@ -405,9 +405,34 @@ function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoadin
 }
 
 /* ── HOURLY CHART ── */
-function HourlyChart({ data, unit }) {
+function HourlyChart({ data, unit, theme = "dark" }) {
   const [activeIdx, setActiveIdx] = useState(null);
   if (!data.length) return null;
+
+  const isLight = theme === "light";
+
+  // Theme-aware colour tokens
+  const c = {
+    chartBg:      isLight ? "#ffffff"              : "rgba(255,255,255,0.04)",
+    chartBorder:  isLight ? "#bfdbfe"              : "rgba(255,255,255,0.09)",
+    legendText:   isLight ? "#374151"              : "rgba(255,255,255,0.6)",
+    gridLine:     isLight ? "rgba(0,0,0,0.08)"     : "rgba(255,255,255,0.07)",
+    gridLabel:    isLight ? "#64748b"              : "rgba(255,255,255,0.3)",
+    timeLabel:    isLight ? "#374151"              : "rgba(255,255,255,0.45)",
+    highlight:    isLight ? "rgba(0,0,0,0.06)"     : "rgba(255,255,255,0.15)",
+    dotFill:      isLight ? "#ffffff"              : "#0a1628",
+    tooltipBg:    isLight ? "#1e3a5f"             : "#0a1628",
+    tooltipText:  isLight ? "#ffffff"             : "white",
+    tooltipSub:   isLight ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.55)",
+    tooltipMeta:  isLight ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.45)",
+    cardBg:       isLight ? "#f0f7ff"              : "rgba(255,255,255,0.04)",
+    cardBorder:   isLight ? "#bfdbfe"              : "rgba(255,255,255,0.07)",
+    cardActiveBg: "rgba(0,212,216,0.15)",
+    cardActiveBd: "rgba(0,212,216,0.4)",
+    cardTime:     isLight ? "#374151"              : "rgba(255,255,255,0.45)",
+    cardTemp:     isLight ? "#1e3a5f"              : "white",
+    cardDesc:     isLight ? "#64748b"              : "rgba(255,255,255,0.35)",
+  };
 
   const temps  = data.map(d => d.temp);
   const minT   = Math.min(...temps);
@@ -422,30 +447,26 @@ function HourlyChart({ data, unit }) {
   const xOf  = i => padL + (i / (n - 1)) * innerW;
   const yOf  = v => padT + innerH - ((v - minT) / range) * innerH;
 
-  // Build SVG path for temperature line
-  const linePath = data.map((d,i) => `${i===0?"M":"L"}${xOf(i).toFixed(1)},${yOf(d.temp).toFixed(1)}`).join(" ");
-  // Filled area under the line
-  const areaPath = `${linePath} L${xOf(n-1).toFixed(1)},${(padT+innerH).toFixed(1)} L${padL},${(padT+innerH).toFixed(1)} Z`;
-
-  // Feels-like dashed line
+  const linePath  = data.map((d,i) => `${i===0?"M":"L"}${xOf(i).toFixed(1)},${yOf(d.temp).toFixed(1)}`).join(" ");
+  const areaPath  = `${linePath} L${xOf(n-1).toFixed(1)},${(padT+innerH).toFixed(1)} L${padL},${(padT+innerH).toFixed(1)} Z`;
   const feelsPath = data.map((d,i) => `${i===0?"M":"L"}${xOf(i).toFixed(1)},${yOf(d.feels).toFixed(1)}`).join(" ");
 
   const active = activeIdx !== null ? data[activeIdx] : null;
 
   return (
-    <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:16,padding:"24px 20px 12px",overflowX:"auto"}}>
+    <div style={{background:c.chartBg,border:`1px solid ${c.chartBorder}`,borderRadius:16,padding:"24px 20px 12px",overflowX:"auto"}}>
       {/* Legend */}
       <div style={{display:"flex",gap:20,marginBottom:12,paddingLeft:padL}}>
-        <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(255,255,255,0.6)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:c.legendText}}>
           <svg width="24" height="4"><line x1="0" y1="2" x2="24" y2="2" stroke="#00d4d8" strokeWidth="2.5" strokeLinecap="round"/></svg>
           Temperature
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(255,255,255,0.6)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:c.legendText}}>
           <svg width="24" height="4"><line x1="0" y1="2" x2="24" y2="2" stroke="#fbbf24" strokeWidth="2" strokeDasharray="4 3" strokeLinecap="round"/></svg>
           Feels like
         </div>
         {data.some(d => d.pop > 0) && (
-          <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(255,255,255,0.6)"}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:c.legendText}}>
             <svg width="12" height="12"><rect width="12" height="12" rx="2" fill="rgba(96,165,250,0.5)"/></svg>
             Rain chance
           </div>
@@ -455,7 +476,7 @@ function HourlyChart({ data, unit }) {
       <svg viewBox={`0 0 ${W} ${H}`} style={{width:"100%",minWidth:480,display:"block",overflow:"visible"}}>
         <defs>
           <linearGradient id="hcGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="#00d4d8" stopOpacity="0.35"/>
+            <stop offset="0%"   stopColor="#00d4d8" stopOpacity={isLight ? "0.25" : "0.35"}/>
             <stop offset="100%" stopColor="#00d4d8" stopOpacity="0.02"/>
           </linearGradient>
           <linearGradient id="popGrad" x1="0" y1="0" x2="0" y2="1">
@@ -464,7 +485,7 @@ function HourlyChart({ data, unit }) {
           </linearGradient>
         </defs>
 
-        {/* Rain probability bars (background) */}
+        {/* Rain probability bars */}
         {data.map((d, i) => {
           if (!d.pop) return null;
           const bw = Math.max(innerW / n - 6, 8);
@@ -484,8 +505,8 @@ function HourlyChart({ data, unit }) {
           const val = Math.round(minT + f * range);
           return (
             <g key={f}>
-              <line x1={padL} y1={y} x2={padL + innerW} y2={y} stroke="rgba(255,255,255,0.07)" strokeWidth="1"/>
-              <text x={padL - 6} y={y + 4} textAnchor="end" fontSize="10" fill="rgba(255,255,255,0.3)">{val}°</text>
+              <line x1={padL} y1={y} x2={padL + innerW} y2={y} stroke={c.gridLine} strokeWidth="1"/>
+              <text x={padL - 6} y={y + 4} textAnchor="end" fontSize="10" fill={c.gridLabel}>{val}°</text>
             </g>
           );
         })}
@@ -505,21 +526,15 @@ function HourlyChart({ data, unit }) {
           const isActive = activeIdx === i;
           return (
             <g key={i} onMouseEnter={() => setActiveIdx(i)} onMouseLeave={() => setActiveIdx(null)} style={{cursor:"default"}}>
-              {/* Invisible wider hit area */}
               <rect x={cx - innerW/(n*2)} y={padT} width={innerW/n} height={innerH+padB} fill="transparent"/>
-              {/* Vertical highlight */}
-              {isActive && <line x1={cx} y1={padT} x2={cx} y2={padT+innerH} stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="3 3"/>}
-              {/* Dot */}
+              {isActive && <line x1={cx} y1={padT} x2={cx} y2={padT+innerH} stroke={c.highlight} strokeWidth="1" strokeDasharray="3 3"/>}
               <circle cx={cx} cy={cy} r={isActive ? 5 : 3.5}
-                fill={isActive ? "#00d4d8" : "#0a1628"}
+                fill={isActive ? "#00d4d8" : c.dotFill}
                 stroke="#00d4d8" strokeWidth={isActive ? 2 : 1.5}
                 style={{transition:"r 0.15s"}}
               />
-              {/* Weather icon above point */}
               <text x={cx} y={padT - 8} textAnchor="middle" fontSize="15">{d.icon}</text>
-              {/* Time label */}
-              <text x={cx} y={padT + innerH + 18} textAnchor="middle" fontSize="10" fill="rgba(255,255,255,0.45)">{d.time}</text>
-              {/* Rain % label */}
+              <text x={cx} y={padT + innerH + 18} textAnchor="middle" fontSize="10" fill={c.timeLabel}>{d.time}</text>
               {d.pop > 0 && (
                 <text x={cx} y={padT + innerH + 32} textAnchor="middle" fontSize="9" fill="#60a5fa">{d.pop}%</text>
               )}
@@ -537,13 +552,13 @@ function HourlyChart({ data, unit }) {
           return (
             <g>
               <rect x={tx} y={ty} width={tw} height={th} rx="8"
-                fill="#0a1628" stroke="rgba(0,212,216,0.4)" strokeWidth="1"
+                fill={c.tooltipBg} stroke="rgba(0,212,216,0.4)" strokeWidth="1"
                 style={{filter:"drop-shadow(0 4px 12px rgba(0,0,0,0.5))"}}
               />
-              <text x={tx+tw/2} y={ty+18} textAnchor="middle" fontSize="11" fontWeight="700" fill="white">{active.time}</text>
+              <text x={tx+tw/2} y={ty+18} textAnchor="middle" fontSize="11" fontWeight="700" fill={c.tooltipText}>{active.time}</text>
               <text x={tx+tw/2} y={ty+34} textAnchor="middle" fontSize="13" fontWeight="700" fill="#00d4d8">{active.temp}°</text>
-              <text x={tx+tw/2} y={ty+50} textAnchor="middle" fontSize="10" fill="rgba(255,255,255,0.55)">Feels {active.feels}°</text>
-              <text x={tx+tw/2} y={ty+65} textAnchor="middle" fontSize="10" fill="rgba(255,255,255,0.45)">💧{active.humidity}% · 💨{active.wind}km/h</text>
+              <text x={tx+tw/2} y={ty+50} textAnchor="middle" fontSize="10" fill={c.tooltipSub}>Feels {active.feels}°</text>
+              <text x={tx+tw/2} y={ty+65} textAnchor="middle" fontSize="10" fill={c.tooltipMeta}>💧{active.humidity}% · 💨{active.wind}km/h</text>
             </g>
           );
         })()}
@@ -558,15 +573,15 @@ function HourlyChart({ data, unit }) {
             style={{
               flexShrink:0, minWidth:72, padding:"10px 10px 8px",
               borderRadius:10, textAlign:"center", cursor:"default",
-              background: activeIdx===i ? "rgba(0,212,216,0.15)" : "rgba(255,255,255,0.04)",
-              border: `1px solid ${activeIdx===i ? "rgba(0,212,216,0.4)" : "rgba(255,255,255,0.07)"}`,
+              background: activeIdx===i ? c.cardActiveBg : c.cardBg,
+              border: `1px solid ${activeIdx===i ? c.cardActiveBd : c.cardBorder}`,
               transition:"all 0.15s",
             }}
           >
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",marginBottom:4}}>{d.time}</div>
+            <div style={{fontSize:11,color:c.cardTime,marginBottom:4}}>{d.time}</div>
             <div style={{fontSize:18,marginBottom:4}}>{d.icon}</div>
-            <div style={{fontSize:14,fontWeight:700,color:"white"}}>{d.temp}°</div>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",marginTop:2}}>{d.desc}</div>
+            <div style={{fontSize:14,fontWeight:700,color:c.cardTemp}}>{d.temp}°</div>
+            <div style={{fontSize:10,color:c.cardDesc,marginTop:2}}>{d.desc}</div>
             {d.pop > 0 && <div style={{fontSize:10,color:"#60a5fa",marginTop:2}}>{d.pop}%</div>}
           </div>
         ))}
@@ -576,7 +591,7 @@ function HourlyChart({ data, unit }) {
 }
 
 /* ── WEATHER PAGE ── */
-function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemoveHistory }) {
+function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemoveHistory, theme = "dark" }) {
   const condition  = weather.weather[0].main;
   const isNight    = weather.dt < weather.sys.sunrise || weather.dt > weather.sys.sunset;
   const heroBg     = bgClass(condition, isNight);
@@ -748,14 +763,14 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
       {/* Today's Hourly Chart */}
       {todayHourly.length > 0 && (
         <div className="forecast-section">
-          <h2 className="section-heading">Today's Hourly Forecast <span style={{fontSize:13,fontWeight:500,opacity:0.5,marginLeft:6}}>· {fmtTempUnit(unit)}</span></h2>
-          <HourlyChart data={todayHourly} unit={unit} />
+          <h2 className="section-heading">Today's Hourly Forecast <span className="heading-unit" style={{fontSize:13,fontWeight:500,opacity:0.5,marginLeft:6}}>· {fmtTempUnit(unit)}</span></h2>
+          <HourlyChart data={todayHourly} unit={unit} theme={theme} />
         </div>
       )}
 
       {/* Forecast */}
       <div className="forecast-section">
-        <h2 className="section-heading">5-Day Forecast <span style={{fontSize:13,fontWeight:500,opacity:0.5,marginLeft:6}}>· {fmtTempUnit(unit)}</span></h2>
+        <h2 className="section-heading">5-Day Forecast <span className="heading-unit" style={{fontSize:13,fontWeight:500,opacity:0.5,marginLeft:6}}>· {fmtTempUnit(unit)}</span></h2>
         <div className="forecast-grid">
           {daily.map((item,i) => {
             const day=item.dt_txt.slice(0,10);
@@ -822,8 +837,7 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
       </div>
 
       <footer className="mo-footer">
-        <a href="https://openweathermap.org" target="_blank" rel="noreferrer"></a>
-        &nbsp;·&nbsp; UI Developed by <a href="https://www.metoffice.gov.uk" target="_blank" rel="noreferrer">Backlog Engineers</a>
+        Developed by: Backlog Engineers
       </footer>
     </div>
   );
