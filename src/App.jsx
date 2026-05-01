@@ -822,8 +822,8 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
       </div>
 
       <footer className="mo-footer">
-        Data: <a href="https://openweathermap.org" target="_blank" rel="noreferrer">OpenWeatherMap</a>
-        &nbsp;·&nbsp; UI inspired by <a href="https://www.metoffice.gov.uk" target="_blank" rel="noreferrer">Met Office</a>
+        <a href="https://openweathermap.org" target="_blank" rel="noreferrer"></a>
+        &nbsp;·&nbsp; UI Developed by <a href="https://www.metoffice.gov.uk" target="_blank" rel="noreferrer">Backlog Engineers</a>
       </footer>
     </div>
   );
