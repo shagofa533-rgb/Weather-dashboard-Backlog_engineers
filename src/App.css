@@ -1282,7 +1282,7 @@
 /* Forecast cards */
 .forecast-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
   gap: 12px;
   margin-bottom: 32px;
 }

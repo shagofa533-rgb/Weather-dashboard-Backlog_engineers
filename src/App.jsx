@@ -431,8 +431,8 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
 
   const dailyMap = {};
   forecast.forEach(item => { const day=item.dt_txt.slice(0,10); if(!dailyMap[day]) dailyMap[day]=item; });
-  const daily = Object.values(dailyMap).slice(0,6);
-
+  const today = new Date().toISOString().slice(0, 10);
+  const daily = Object.values(dailyMap).filter(item => item.dt_txt.slice(0, 10) !== today).slice(0, 5);
   const dailyMinMax = {};
   forecast.forEach(item => {
     const day = item.dt_txt.slice(0,10);
@@ -537,7 +537,7 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
 
           {/* Right: map */}
           <div style={{display:"flex",flexDirection:"column",gap:10,marginLeft:"auto"}}>
-            <div style={{borderRadius:12,overflow:"hidden",border:"1px solid rgba(255,255,255,0.15)",width:440,height:440,boxShadow:"0 4px 24px rgba(0,0,0,0.35)",flexShrink:0}}>
+            <div style={{borderRadius:12,overflow:"hidden",border:"1px solid rgba(255,255,255,0.15)",width:300,height:400,boxShadow:"0 4px 24px rgba(0,0,0,0.35)",flexShrink:0}}>
               <iframe title="City Map" width="440" height="440" style={{border:"none",display:"block"}}
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=${weather.coord.lon-0.15}%2C${weather.coord.lat-0.15}%2C${weather.coord.lon+0.15}%2C${weather.coord.lat+0.15}&layer=mapnik&marker=${weather.coord.lat}%2C${weather.coord.lon}&lang=en`}
               />
@@ -568,7 +568,7 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
             const cond=item.weather[0].main;
             return (
               <div className="forecast-card" key={item.dt}>
-                <span className="forecast-day">{i===0?"TODAY":fmtDay(item.dt_txt)}</span>
+                <span className="forecast-day">{fmtDay(item.dt_txt)}</span>
                 <span className="forecast-date">{fmtDate(item.dt_txt)}</span>
                 <span className="forecast-icon">{weatherIcon(cond,false)}</span>
                 <div className="forecast-temps">
