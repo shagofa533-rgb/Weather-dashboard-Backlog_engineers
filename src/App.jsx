@@ -404,6 +404,177 @@ function HomePage({ onSearch, error, loading, onNavigate, onGeoLocate, geoLoadin
   );
 }
 
+/* ── HOURLY CHART ── */
+function HourlyChart({ data, unit }) {
+  const [activeIdx, setActiveIdx] = useState(null);
+  if (!data.length) return null;
+
+  const temps  = data.map(d => d.temp);
+  const minT   = Math.min(...temps);
+  const maxT   = Math.max(...temps);
+  const range  = maxT - minT || 1;
+
+  const W = 900, H = 220, padL = 40, padR = 20, padT = 30, padB = 50;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+  const n = data.length;
+
+  const xOf  = i => padL + (i / (n - 1)) * innerW;
+  const yOf  = v => padT + innerH - ((v - minT) / range) * innerH;
+
+  // Build SVG path for temperature line
+  const linePath = data.map((d,i) => `${i===0?"M":"L"}${xOf(i).toFixed(1)},${yOf(d.temp).toFixed(1)}`).join(" ");
+  // Filled area under the line
+  const areaPath = `${linePath} L${xOf(n-1).toFixed(1)},${(padT+innerH).toFixed(1)} L${padL},${(padT+innerH).toFixed(1)} Z`;
+
+  // Feels-like dashed line
+  const feelsPath = data.map((d,i) => `${i===0?"M":"L"}${xOf(i).toFixed(1)},${yOf(d.feels).toFixed(1)}`).join(" ");
+
+  const active = activeIdx !== null ? data[activeIdx] : null;
+
+  return (
+    <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:16,padding:"24px 20px 12px",overflowX:"auto"}}>
+      {/* Legend */}
+      <div style={{display:"flex",gap:20,marginBottom:12,paddingLeft:padL}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(255,255,255,0.6)"}}>
+          <svg width="24" height="4"><line x1="0" y1="2" x2="24" y2="2" stroke="#00d4d8" strokeWidth="2.5" strokeLinecap="round"/></svg>
+          Temperature
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(255,255,255,0.6)"}}>
+          <svg width="24" height="4"><line x1="0" y1="2" x2="24" y2="2" stroke="#fbbf24" strokeWidth="2" strokeDasharray="4 3" strokeLinecap="round"/></svg>
+          Feels like
+        </div>
+        {data.some(d => d.pop > 0) && (
+          <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(255,255,255,0.6)"}}>
+            <svg width="12" height="12"><rect width="12" height="12" rx="2" fill="rgba(96,165,250,0.5)"/></svg>
+            Rain chance
+          </div>
+        )}
+      </div>
+
+      <svg viewBox={`0 0 ${W} ${H}`} style={{width:"100%",minWidth:480,display:"block",overflow:"visible"}}>
+        <defs>
+          <linearGradient id="hcGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="#00d4d8" stopOpacity="0.35"/>
+            <stop offset="100%" stopColor="#00d4d8" stopOpacity="0.02"/>
+          </linearGradient>
+          <linearGradient id="popGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="#60a5fa" stopOpacity="0.55"/>
+            <stop offset="100%" stopColor="#60a5fa" stopOpacity="0.1"/>
+          </linearGradient>
+        </defs>
+
+        {/* Rain probability bars (background) */}
+        {data.map((d, i) => {
+          if (!d.pop) return null;
+          const bw = Math.max(innerW / n - 6, 8);
+          const bh = (d.pop / 100) * innerH * 0.4;
+          return (
+            <rect key={`pop-${i}`}
+              x={xOf(i) - bw / 2} y={padT + innerH - bh}
+              width={bw} height={bh}
+              fill="url(#popGrad)" rx="3"
+            />
+          );
+        })}
+
+        {/* Horizontal grid lines */}
+        {[0, 0.25, 0.5, 0.75, 1].map(f => {
+          const y = padT + innerH * (1 - f);
+          const val = Math.round(minT + f * range);
+          return (
+            <g key={f}>
+              <line x1={padL} y1={y} x2={padL + innerW} y2={y} stroke="rgba(255,255,255,0.07)" strokeWidth="1"/>
+              <text x={padL - 6} y={y + 4} textAnchor="end" fontSize="10" fill="rgba(255,255,255,0.3)">{val}°</text>
+            </g>
+          );
+        })}
+
+        {/* Area fill */}
+        <path d={areaPath} fill="url(#hcGrad)"/>
+
+        {/* Feels-like dashed line */}
+        <path d={feelsPath} fill="none" stroke="#fbbf24" strokeWidth="1.8" strokeDasharray="5 4" strokeLinecap="round" strokeLinejoin="round" opacity="0.75"/>
+
+        {/* Temperature line */}
+        <path d={linePath} fill="none" stroke="#00d4d8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+
+        {/* Data points + hover targets */}
+        {data.map((d, i) => {
+          const cx = xOf(i), cy = yOf(d.temp);
+          const isActive = activeIdx === i;
+          return (
+            <g key={i} onMouseEnter={() => setActiveIdx(i)} onMouseLeave={() => setActiveIdx(null)} style={{cursor:"default"}}>
+              {/* Invisible wider hit area */}
+              <rect x={cx - innerW/(n*2)} y={padT} width={innerW/n} height={innerH+padB} fill="transparent"/>
+              {/* Vertical highlight */}
+              {isActive && <line x1={cx} y1={padT} x2={cx} y2={padT+innerH} stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="3 3"/>}
+              {/* Dot */}
+              <circle cx={cx} cy={cy} r={isActive ? 5 : 3.5}
+                fill={isActive ? "#00d4d8" : "#0a1628"}
+                stroke="#00d4d8" strokeWidth={isActive ? 2 : 1.5}
+                style={{transition:"r 0.15s"}}
+              />
+              {/* Weather icon above point */}
+              <text x={cx} y={padT - 8} textAnchor="middle" fontSize="15">{d.icon}</text>
+              {/* Time label */}
+              <text x={cx} y={padT + innerH + 18} textAnchor="middle" fontSize="10" fill="rgba(255,255,255,0.45)">{d.time}</text>
+              {/* Rain % label */}
+              {d.pop > 0 && (
+                <text x={cx} y={padT + innerH + 32} textAnchor="middle" fontSize="9" fill="#60a5fa">{d.pop}%</text>
+              )}
+            </g>
+          );
+        })}
+
+        {/* Tooltip */}
+        {active && (() => {
+          const i = activeIdx;
+          const cx = xOf(i);
+          const tw = 120, th = 80;
+          const tx = Math.min(Math.max(cx - tw/2, padL), padL + innerW - tw);
+          const ty = padT - th - 14;
+          return (
+            <g>
+              <rect x={tx} y={ty} width={tw} height={th} rx="8"
+                fill="#0a1628" stroke="rgba(0,212,216,0.4)" strokeWidth="1"
+                style={{filter:"drop-shadow(0 4px 12px rgba(0,0,0,0.5))"}}
+              />
+              <text x={tx+tw/2} y={ty+18} textAnchor="middle" fontSize="11" fontWeight="700" fill="white">{active.time}</text>
+              <text x={tx+tw/2} y={ty+34} textAnchor="middle" fontSize="13" fontWeight="700" fill="#00d4d8">{active.temp}°</text>
+              <text x={tx+tw/2} y={ty+50} textAnchor="middle" fontSize="10" fill="rgba(255,255,255,0.55)">Feels {active.feels}°</text>
+              <text x={tx+tw/2} y={ty+65} textAnchor="middle" fontSize="10" fill="rgba(255,255,255,0.45)">💧{active.humidity}% · 💨{active.wind}km/h</text>
+            </g>
+          );
+        })()}
+      </svg>
+
+      {/* Scrollable slot cards below chart */}
+      <div style={{display:"flex",gap:8,marginTop:8,overflowX:"auto",paddingBottom:4}}>
+        {data.map((d,i) => (
+          <div key={i}
+            onMouseEnter={() => setActiveIdx(i)}
+            onMouseLeave={() => setActiveIdx(null)}
+            style={{
+              flexShrink:0, minWidth:72, padding:"10px 10px 8px",
+              borderRadius:10, textAlign:"center", cursor:"default",
+              background: activeIdx===i ? "rgba(0,212,216,0.15)" : "rgba(255,255,255,0.04)",
+              border: `1px solid ${activeIdx===i ? "rgba(0,212,216,0.4)" : "rgba(255,255,255,0.07)"}`,
+              transition:"all 0.15s",
+            }}
+          >
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",marginBottom:4}}>{d.time}</div>
+            <div style={{fontSize:18,marginBottom:4}}>{d.icon}</div>
+            <div style={{fontSize:14,fontWeight:700,color:"white"}}>{d.temp}°</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",marginTop:2}}>{d.desc}</div>
+            {d.pop > 0 && <div style={{fontSize:10,color:"#60a5fa",marginTop:2}}>{d.pop}%</div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── WEATHER PAGE ── */
 function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemoveHistory }) {
   const condition  = weather.weather[0].main;
@@ -433,12 +604,28 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
   forecast.forEach(item => { const day=item.dt_txt.slice(0,10); if(!dailyMap[day]) dailyMap[day]=item; });
   const today = new Date().toISOString().slice(0, 10);
   const daily = Object.values(dailyMap).filter(item => item.dt_txt.slice(0, 10) !== today).slice(0, 5);
+
   const dailyMinMax = {};
   forecast.forEach(item => {
     const day = item.dt_txt.slice(0,10);
     if(!dailyMinMax[day]) dailyMinMax[day]={min:item.main.temp_min,max:item.main.temp_max};
     else { dailyMinMax[day].min=Math.min(dailyMinMax[day].min,item.main.temp_min); dailyMinMax[day].max=Math.max(dailyMinMax[day].max,item.main.temp_max); }
   });
+
+  // Today's hourly data (OWM /forecast gives 3-hourly slots; filter to today's date)
+  const todayStr = new Date().toISOString().slice(0,10);
+  const todayHourly = forecast
+    .filter(item => item.dt_txt.slice(0,10) === todayStr)
+    .map(item => ({
+      time: fmtTime(item.dt, offset),
+      temp: fmtTempVal(item.main.temp, unit),
+      feels: fmtTempVal(item.main.feels_like, unit),
+      humidity: item.main.humidity,
+      wind: Math.round(item.wind.speed * 3.6),
+      icon: weatherIcon(item.weather[0].main, false),
+      desc: item.weather[0].description,
+      pop: Math.round((item.pop || 0) * 100),
+    }));
 
   const humidity     = weather.main.humidity;
   const windSpeedMs  = weather.wind.speed;
@@ -467,7 +654,7 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
       🕐 <span style={{fontSize:12,fontWeight:600}}>{history.length}</span>
     </button>
     {showHistory && (
-      <div className="history-dropdown" style={{position:"absolute",top:"calc(100% + 8px)",right:0,width:280,background:"#0a1628",border:"1px solid rgba(0,164,167,0.25)",borderRadius:12,boxShadow:"0 12px 40px rgba(0,0,0,0.5)",zIndex:100,overflow:"hidden"}}>
+      <div className="history-dropdown" style={{position:"absolute",top:"calc(100% + 8px)",right:0,width:280,background:"#0a1628",border:"1px solid rgba(0,164,167,0.25)",borderRadius:12,boxShadow:"0 12px 40px rgba(0,0,0,0.5)",zIndex:200,overflow:"hidden"}}>
         <div style={{padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,0.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <span style={{fontSize:13,fontWeight:700,color:"white"}}>Recent Searches</span>
           <span style={{fontSize:11,color:"rgba(255,255,255,0.3)"}}>{history.length} / 10</span>
@@ -557,6 +744,14 @@ function WeatherPage({ weather, forecast, onBack, onSearch, history = [], onRemo
           </div>
         </div>
       </div>
+
+      {/* Today's Hourly Chart */}
+      {todayHourly.length > 0 && (
+        <div className="forecast-section">
+          <h2 className="section-heading">Today's Hourly Forecast <span style={{fontSize:13,fontWeight:500,opacity:0.5,marginLeft:6}}>· {fmtTempUnit(unit)}</span></h2>
+          <HourlyChart data={todayHourly} unit={unit} />
+        </div>
+      )}
 
       {/* Forecast */}
       <div className="forecast-section">
